@@ -529,11 +529,11 @@ def main() -> int:
     if not args.output:
         root = configured_output_dir()
         if root is None:
-            print("还没有字幕输出文件夹。请先在仓库目录运行：python -m ytb_cc.setup", file=sys.stderr)
+            print(f"还没有字幕输出文件夹。请先在仓库目录运行：{Path(sys.executable).name} -m ytb_cc.setup", file=sys.stderr)
             return 1
         if not root.is_dir():
             print(f"字幕目录不存在：{root}", file=sys.stderr)
-            print("请重新运行：python -m ytb_cc.setup", file=sys.stderr)
+            print(f"请重新运行：{Path(sys.executable).name} -m ytb_cc.setup", file=sys.stderr)
             return 1
     else:
         root = None

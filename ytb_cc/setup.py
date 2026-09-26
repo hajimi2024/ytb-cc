@@ -45,7 +45,7 @@ def run_setup(input_fn=input, isatty: bool | None = None, install: bool | None =
     if isatty is None:
         isatty = sys.stdin.isatty()
     if not isatty:
-        print("请在交互终端里运行：python -m ytb_cc.setup", file=sys.stderr)
+        print(f"请在交互终端里运行：{Path(sys.executable).name} -m ytb_cc.setup", file=sys.stderr)
         return 1
 
     if install is None:

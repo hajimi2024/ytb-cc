@@ -41,17 +41,31 @@
 
 ## 📦 安装
 
-先安装 **Python 3.10 或更高**，并确认终端里能运行 `python`。没有 Python 时，安装命令进不了本项目，系统只会提示找不到 `python`。有些系统里的命令是 `python3`，把下面的 `python` 换成 `python3` 即可。
+先安装 **Python 3.10 或更高**。Debian、Ubuntu 服务器上通常没有 `python` 这个命令，只有 `python3`。直接运行 `python` 时，系统会停在 `Command 'python' not found`，还不会进入本项目。
 
-三个系统都执行：
+Linux、WSL、Mac：
 
-```text
+```bash
+git clone https://github.com/hajimi2024/ytb-cc.git
+cd ytb-cc
+python3 -m ytb_cc.setup
+```
+
+如果这里提示找不到 `python3`，先安装它再执行上面的最后一行。Debian / Ubuntu：
+
+```bash
+apt update && apt install -y python3 python3-pip python3-venv
+```
+
+Windows PowerShell：
+
+```powershell
 git clone https://github.com/hajimi2024/ytb-cc.git
 cd ytb-cc
 python -m ytb_cc.setup
 ```
 
-`python -m ytb_cc.setup` 会安装 `ytb-cc`，并只问一次字幕放在哪个文件夹。请自己输入完整路径，例如：
+上面的 setup 会安装 `ytb-cc`，并只问一次字幕放在哪个文件夹。请自己输入完整路径，例如：
 
 | 系统 | 路径样子 |
 |---|---|
@@ -69,11 +83,7 @@ python -m ytb_cc.setup
 unsetopt nomatch
 ```
 
-以后要换字幕文件夹，再运行一次：
-
-```text
-python -m ytb_cc.setup
-```
+以后要换字幕文件夹，再运行一次安装时用的那条命令：Linux、WSL、Mac 用 `python3 -m ytb_cc.setup`，Windows 用 `python -m ytb_cc.setup`。
 
 ## 💬 使用
 
@@ -93,7 +103,7 @@ ytb-cc -o 某文件.txt <链接>
 ```
 
 - 链接里有 `&` 时要加引号，否则 PowerShell 和 zsh 都会把后面截掉。
-- 还没做过安装里的 setup 就运行 `ytb-cc`，程序只提示先运行 `python -m ytb_cc.setup`，不会开始拉字幕。
+- 还没做过安装里的 setup 就运行 `ytb-cc`，程序只提示先完成上面的安装，不会开始拉字幕。
 - `--lang` 会换成你给的语言顺序。`-o` 只影响这一次，不改已经保存的文件夹。
 
 输出文件是 `{你设置的文件夹}/{频道全名}/{标题}.txt`。同名文件直接覆盖。
