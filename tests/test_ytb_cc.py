@@ -128,10 +128,12 @@ class SetupTest(unittest.TestCase):
             dest = Path(tmp) / "字幕库"
             answers = iter(["字幕库", str(dest)])
             with patch.dict(os.environ, {"YTB_CC_CONFIG": str(cfg)}, clear=False):
+                os.environ.pop("YTB_CC_DIR", None)
                 code = run_setup(input_fn=lambda _prompt: next(answers), isatty=True, install=False)
+                saved = configured_output_dir()
             self.assertEqual(code, 0)
             self.assertTrue(dest.is_dir())
-            self.assertEqual(configured_output_dir(), dest.resolve())
+            self.assertEqual(saved, dest.resolve())
 
     def test_setup_enter_uses_default(self):
         with TemporaryDirectory() as tmp:
