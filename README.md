@@ -84,15 +84,13 @@ python3 --version
 
 ## 📦 安装
 
-确认 Python 版本符合上面的要求后，再拉仓库。Linux 服务器、WSL、Mac：
+确认 Python 版本符合上面的要求后，再拉仓库。Linux、WSL、Mac：
 
 ```bash
 git clone https://github.com/hajimi2024/ytb-cc.git
 cd ytb-cc
-bash bootstrap.sh
+python3 -m ytb_cc.setup
 ```
-
-如果不是 root，又没有 Python，脚本会停下来并写明要执行的安装命令，不会假装已经装好。Mac 没有 `apt`，需要先自己安装 Python 3.10+，再运行 `bash bootstrap.sh`。
 
 Windows PowerShell：
 
@@ -120,7 +118,7 @@ python -m ytb_cc.setup
 unsetopt nomatch
 ```
 
-以后要换字幕文件夹，Linux、WSL、Mac 再运行一次 `bash bootstrap.sh`，Windows 再运行一次 `python -m ytb_cc.setup`。
+以后要换字幕文件夹，Linux、WSL、Mac 再运行一次 `python3 -m ytb_cc.setup`，Windows 再运行一次 `python -m ytb_cc.setup`。
 
 ## 💬 使用
 
