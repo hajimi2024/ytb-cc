@@ -89,7 +89,7 @@ python3 --version
 ```bash
 git clone https://github.com/hajimi2024/ytb-cc.git
 cd ytb-cc
-python3 -m ytb_cc.setup
+python3 -m ytb_cc.setup && cd ~
 ```
 
 Windows PowerShell：
@@ -97,7 +97,7 @@ Windows PowerShell：
 ```powershell
 git clone https://github.com/hajimi2024/ytb-cc.git
 cd ytb-cc
-python -m ytb_cc.setup
+python -m ytb_cc.setup; if ($LASTEXITCODE -eq 0) { Set-Location ~ }
 ```
 
 上面的 setup 会安装 `ytb-cc`，并只问一次字幕放在哪个文件夹。请自己输入完整路径，例如：
@@ -118,7 +118,7 @@ python -m ytb_cc.setup
 unsetopt nomatch
 ```
 
-以后要换字幕文件夹，Linux、WSL、Mac 再运行一次 `python3 -m ytb_cc.setup`，Windows 再运行一次 `python -m ytb_cc.setup`。
+安装成功后会回到登录时的目录，提示符里不再带着 `ytb-cc`。以后要换字幕文件夹，先进仓库再运行：Linux、WSL、Mac 用 `python3 -m ytb_cc.setup && cd ~`，Windows 用 `python -m ytb_cc.setup`，成功后再 `Set-Location ~`。
 
 ## 💬 使用
 
