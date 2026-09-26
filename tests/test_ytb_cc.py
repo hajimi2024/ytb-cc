@@ -122,16 +122,29 @@ class SetupTest(unittest.TestCase):
                 os.environ["YTB_CC_DIR"] = str(Path(tmp) / "other")
                 self.assertEqual(configured_output_dir(), Path(tmp) / "other")
 
-    def test_setup_creates_only_after_yes(self):
+    def test_setup_rejects_relative_then_saves_absolute(self):
         with TemporaryDirectory() as tmp:
             cfg = Path(tmp) / "config.json"
             dest = Path(tmp) / "字幕库"
-            answers = iter([str(dest), "n"])
+            answers = iter(["字幕库", str(dest)])
             with patch.dict(os.environ, {"YTB_CC_CONFIG": str(cfg)}, clear=False):
                 code = run_setup(input_fn=lambda _prompt: next(answers), isatty=True, install=False)
-            self.assertEqual(code, 1)
-            self.assertFalse(dest.exists())
-            self.assertFalse(cfg.exists())
+            self.assertEqual(code, 0)
+            self.assertTrue(dest.is_dir())
+            self.assertEqual(configured_output_dir(), dest.resolve())
+
+    def test_setup_enter_uses_default(self):
+        with TemporaryDirectory() as tmp:
+            cfg = Path(tmp) / "config.json"
+            dest = Path(tmp) / "YouTube字幕"
+            with patch.dict(os.environ, {"YTB_CC_CONFIG": str(cfg)}, clear=False):
+                os.environ.pop("YTB_CC_DIR", None)
+                with patch("ytb_cc.setup.example_output_dir", return_value=str(dest)):
+                    code = run_setup(input_fn=lambda _prompt: "", isatty=True, install=False)
+                saved = configured_output_dir()
+            self.assertEqual(code, 0)
+            self.assertTrue(dest.is_dir())
+            self.assertEqual(saved, dest.resolve())
 
     def test_setup_saves_existing_dir(self):
         with TemporaryDirectory() as tmp:

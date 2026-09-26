@@ -4,7 +4,7 @@
 
 **把 YouTube 已有字幕收成一份文本**
 
-[先检查 Python](#-先检查-python) · [安装](#-安装) · [使用](#-使用) · [字幕选择](#-字幕选择)
+[先检查 Python](#-先检查-python) · [安装 Python](#-安装-python) · [拉取并设置文件夹](#-拉取并设置文件夹) · [使用](#-使用) · [清除](#-清除)
 
 </div>
 
@@ -37,9 +37,9 @@
 
 ---
 
-## 🦉 先检查 Python
+## 🐍 先检查 Python
 
-安装本项目之前，先看这台电脑有没有 Python，以及版本是不是 **3.10 或更高**。
+这一步只查版本，不安装，也不拉仓库。需要 **Python 3.10 或更高**。
 
 Linux、WSL、Mac：
 
@@ -53,38 +53,55 @@ Windows PowerShell：
 python --version
 ```
 
-两种结果：
+显示出 `Python 3.10`、`3.11`、`3.12` 或更高，就跳到后面的「拉取并设置文件夹」。提示找不到命令，或者版本低于 3.10，先做下一节。
 
-- 显示出 `Python 3.10`、`3.11`、`3.12` 或更高：已经装好，直接往下做安装。
-- 提示 `command not found`、`不是内部或外部命令`，或者版本低于 3.10：按你的系统安装。
+## 📦 安装 Python
 
-Debian / Ubuntu 服务器（当前用户是 root）：
+没有安装时用安装命令。已经安装但版本过旧时用更新命令。做完再查一次版本。
+
+Debian / Ubuntu 安装：
+
+```bash
+apt update && apt install -y python3 python3-pip python3-venv
+```
+
+Debian / Ubuntu 更新：
 
 ```bash
 apt update && apt install -y python3 python3-pip python3-venv
 python3 --version
 ```
 
-Windows PowerShell：
+Windows 安装：
 
 ```powershell
 winget install Python.Python.3.12
 ```
 
-装完后关掉终端再开一个，再运行 `python --version`。
+Windows 更新：
 
-Mac（已安装 Homebrew）：
+```powershell
+winget upgrade Python.Python.3.12
+```
+
+装完后关掉终端再开一个，然后重新查版本。
+
+Mac（已安装 Homebrew）安装：
 
 ```bash
 brew install python@3.12
+```
+
+Mac 更新：
+
+```bash
+brew upgrade python@3.12
 python3 --version
 ```
 
-不下载视频，不做语音识别，不登录账号。PowerShell、WSL、Mac 装完之后都用同一个命令。
+## 📥 拉取并设置文件夹
 
-## 📦 安装
-
-确认 Python 版本符合上面的要求后，再拉仓库。Linux、WSL、Mac：
+版本合格后再执行。Linux、WSL、Mac：
 
 ```bash
 git clone https://github.com/hajimi2024/ytb-cc.git
@@ -100,17 +117,14 @@ cd ytb-cc
 python -m ytb_cc.setup; if ($LASTEXITCODE -eq 0) { Set-Location ~ }
 ```
 
-上面的 setup 会安装 `ytb-cc`，并只问一次字幕放在哪个文件夹。请自己输入完整路径，例如：
+setup 装好命令后，只问一次字幕文件夹。
 
-| 系统 | 路径样子 |
-|---|---|
-| WSL | `/mnt/e/YouTube字幕` |
-| Windows PowerShell | `D:\YouTube字幕` |
-| Mac | `/Users/你的用户名/YouTube字幕` |
+- 直接按回车：使用默认文件夹，并自动创建。root 服务器是 `/root/YouTube字幕`，普通用户在自己的家目录下，Windows 是 `C:\Users\当前用户\YouTube字幕`。
+- 要自定义：输入绝对路径，例如 `/mnt/e/YouTube字幕` 或 `D:\YouTube字幕`。相对路径不会被接受。
 
-目录还不存在时，会再问一次是否创建。输入 `y` 才会创建。
+成功后终端回到登录时的目录，提示符从 `~/ytb-cc #` 回到 `~ #`。这是家目录，不是硬盘最顶层的 `/`。安装失败时不会跳走。
 
-如果装完提示找不到 `ytb-cc`：WSL 和 Mac 把 `~/.local/bin` 加入 PATH；Windows 确认 Python 的 `Scripts` 目录在 PATH 里。然后新开一个终端。
+如果随后提示找不到 `ytb-cc`：WSL 和 Mac 把 `~/.local/bin` 加入 PATH；Windows 确认 Python 的 `Scripts` 目录在 PATH 里。然后新开一个终端。
 
 用 zsh（WSL 或 Mac）时，在 `~/.zshrc` 加一行，否则链接里的 `?` 到不了程序：
 
@@ -118,7 +132,7 @@ python -m ytb_cc.setup; if ($LASTEXITCODE -eq 0) { Set-Location ~ }
 unsetopt nomatch
 ```
 
-安装成功后会回到登录时的目录，提示符里不再带着 `ytb-cc`。以后要换字幕文件夹，先进仓库再运行：Linux、WSL、Mac 用 `python3 -m ytb_cc.setup && cd ~`，Windows 用 `python -m ytb_cc.setup`，成功后再 `Set-Location ~`。
+以后要换字幕文件夹，先进仓库再运行一次 setup，成功后同样回到家目录。
 
 ## 💬 使用
 
@@ -163,6 +177,26 @@ ytb-cc -o 某文件.txt <链接>
 - 不读剪贴板。
 - 不把视频简介全文写进文件。
 - 不为没有字幕的视频做语音识别。
+
+## 🧹 清除
+
+以后如果想卸掉这个命令，在家目录执行。这只删除程序、配置和克隆下来的仓库，不删除已经生成的字幕文件夹。
+
+Linux、WSL、Mac：
+
+```bash
+python3 -m pip uninstall -y ytb-cc
+rm -rf ~/.config/ytb-cc ~/ytb-cc
+```
+
+Windows PowerShell：
+
+```powershell
+python -m pip uninstall -y ytb-cc
+Remove-Item -Recurse -Force "$env:APPDATA\ytb-cc", "$env:USERPROFILE\ytb-cc"
+```
+
+字幕如果也要删，再自己删除当时设置的那个文件夹。
 
 ## 📄 License
 

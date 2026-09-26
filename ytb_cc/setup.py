@@ -68,20 +68,23 @@ def run_setup(input_fn=input, isatty: bool | None = None, install: bool | None =
 
     print("请设置一个专门用来放字幕的文件夹。")
     print("设置好之后，每次只要运行 ytb-cc <链接>，不用再填路径。")
-    print(f"示例：{example_output_dir()}")
-    entered = clean_entered_path(input_fn("路径："))
-    if not entered:
-        print("没有输入路径，未保存。", file=sys.stderr)
-        return 1
-
-    directory = Path(entered).expanduser()
+    default_dir = Path(example_output_dir())
+    print(f"直接回车使用默认路径：{default_dir}")
+    print("要自定义请输入绝对路径。")
+    while True:
+        entered = clean_entered_path(input_fn("路径："))
+        if not entered:
+            directory = default_dir
+            break
+        if not Path(entered).is_absolute():
+            print("这不是绝对路径。请重新输入，或直接回车使用默认路径。", file=sys.stderr)
+            continue
+        directory = Path(entered)
+        break
     if directory.exists() and not directory.is_dir():
         print("这不是文件夹，未保存。", file=sys.stderr)
         return 1
     if not directory.exists():
-        if not confirm(f"目录不存在：{directory}\n是否创建？输入 y 创建：", input_fn):
-            print("未创建，未保存。", file=sys.stderr)
-            return 1
         try:
             directory.mkdir(parents=True, exist_ok=True)
         except OSError as exc:

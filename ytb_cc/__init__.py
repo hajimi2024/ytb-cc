@@ -132,12 +132,8 @@ def platform_kind() -> str:
 
 
 def example_output_dir() -> str:
-    kind = platform_kind()
-    if kind == "wsl":
-        return "/mnt/e/YouTube字幕"
-    if kind == "windows":
-        return "D:\\YouTube字幕"
-    return str(Path.home() / "YouTube字幕")
+    """回车时使用的默认绝对路径：当前用户家目录下的 YouTube字幕。"""
+    return str((Path.home() / "YouTube字幕").resolve())
 
 
 def config_path() -> Path:
