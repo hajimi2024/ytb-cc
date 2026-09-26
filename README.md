@@ -41,21 +41,15 @@
 
 ## 📦 安装
 
-先安装 **Python 3.10 或更高**。Debian、Ubuntu 服务器上通常没有 `python` 这个命令，只有 `python3`。直接运行 `python` 时，系统会停在 `Command 'python' not found`，还不会进入本项目。
-
-Linux、WSL、Mac：
+Linux 服务器、WSL、Mac 用下面这三行。服务器上没有 Python 时，`bootstrap.sh` 会先安装 Python 3.10 或更高（Debian / Ubuntu，并且当前是 root），然后再问字幕文件夹。
 
 ```bash
 git clone https://github.com/hajimi2024/ytb-cc.git
 cd ytb-cc
-python3 -m ytb_cc.setup
+bash bootstrap.sh
 ```
 
-如果这里提示找不到 `python3`，先安装它再执行上面的最后一行。Debian / Ubuntu：
-
-```bash
-apt update && apt install -y python3 python3-pip python3-venv
-```
+如果不是 root，又没有 Python，脚本会停下来并写明要执行的安装命令，不会假装已经装好。Mac 没有 `apt`，需要先自己安装 Python 3.10+，再运行 `bash bootstrap.sh`。
 
 Windows PowerShell：
 
@@ -83,7 +77,7 @@ python -m ytb_cc.setup
 unsetopt nomatch
 ```
 
-以后要换字幕文件夹，再运行一次安装时用的那条命令：Linux、WSL、Mac 用 `python3 -m ytb_cc.setup`，Windows 用 `python -m ytb_cc.setup`。
+以后要换字幕文件夹，Linux、WSL、Mac 再运行一次 `bash bootstrap.sh`，Windows 再运行一次 `python -m ytb_cc.setup`。
 
 ## 💬 使用
 
