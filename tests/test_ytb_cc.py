@@ -17,6 +17,7 @@ from ytb_cc import (
     output_file,
     save_output_dir,
     select_track,
+    wsl_linux_folder_uri,
 )
 from ytb_cc.setup import merge_path, run_setup
 
@@ -97,6 +98,10 @@ class OutputTest(unittest.TestCase):
         spaced = explorer_folder_uri(r"E:\YouTube字幕\Imran Siddiq\a.txt")
         self.assertIn("Imran%20Siddiq", spaced)
         self.assertIn("YouTube字幕", spaced)
+
+    def test_wsl_home_uri_keeps_chinese(self):
+        uri = wsl_linux_folder_uri("/root/YouTube字幕/频道/a.txt", "Ubuntu-24.04")
+        self.assertEqual(uri, "file://wsl.localhost/Ubuntu-24.04/root/YouTube字幕/频道/")
 
     def test_mac_uri_encodes_chinese(self):
         uri = finder_folder_uri("/Users/me/字幕/a.txt")

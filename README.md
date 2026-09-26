@@ -126,7 +126,13 @@ setup 装好命令后，只问一次字幕文件夹。
 
 成功后终端回到登录时的目录，提示符从 `~/ytb-cc #` 回到 `~ #`。这是家目录，不是硬盘最顶层的 `/`。安装失败时不会跳走。
 
-Windows 会把 `ytb-cc` 放到 `%USERPROFILE%\.local\bin`，并写入用户 PATH。请新开一个 PowerShell 窗口再用。WSL 和 Mac 如果提示找不到命令，把 `~/.local/bin` 加入 PATH，然后新开一个终端。
+命令放在哪：
+
+- Windows：`%USERPROFILE%\.local\bin\ytb-cc.cmd`，并已写入用户 PATH。请新开一个 PowerShell 窗口再用。
+- WSL 且当前用户是 root：`/usr/local/bin/ytb-cc`。这个目录一般已在 PATH 里，不用再加。
+- WSL 普通用户和 Mac：`~/.local/bin/ytb-cc`。如果提示找不到命令，把 `~/.local/bin` 加入 PATH，然后新开一个终端。
+
+家目录下的默认字幕文件夹，在 WSL 里也会给出可点击的资源管理器路径。
 
 用 zsh（WSL 或 Mac）时，在 `~/.zshrc` 加一行，否则链接里的 `?` 到不了程序：
 
@@ -184,10 +190,10 @@ ytb-cc -o 某文件.txt <链接>
 
 以后如果想卸掉这个命令，在家目录执行。这只删除程序、配置和克隆下来的仓库，不删除已经生成的字幕文件夹。
 
-WSL、Mac：
+WSL、Mac 在家目录执行。两条都删，因为 root 的命令在 `/usr/local/bin`，普通用户和 Mac 的命令在 `~/.local/bin`：
 
 ```bash
-python3 -m pip uninstall -y ytb-cc
+rm -f /usr/local/bin/ytb-cc ~/.local/bin/ytb-cc
 rm -rf ~/.config/ytb-cc ~/ytb-cc
 ```
 

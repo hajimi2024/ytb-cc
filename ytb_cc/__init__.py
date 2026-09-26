@@ -224,15 +224,35 @@ def format_terminal_link(uri: str, label: str, tty: bool | None = None) -> str:
     return f"\033]8;;{uri}\033\\{label}\033]8;;\033\\"
 
 
+def wsl_linux_folder_uri(file_path: str, distro: str) -> str:
+    """WSL 家目录等不在 /mnt 下的文件，用 Windows 能打开的 wsl.localhost 地址。"""
+    folder = Path(file_path).as_posix()
+    folder = folder.rsplit("/", 1)[0] + "/"
+    body = f"wsl.localhost/{distro}{folder}"
+    encoded = []
+    for ch in body:
+        if ord(ch) > 127 or ch in "/":
+            encoded.append(ch)
+        else:
+            encoded.append(urllib.parse.quote(ch, safe=""))
+    return "file://" + "".join(encoded)
+
+
 def folder_link_target(path: Path) -> tuple[str, str, str] | None:
     """(标签, 显示路径, file URI)。无法对应到本机文件夹时返回 None。"""
     if sys.platform == "darwin":
         display = str(path.resolve())
         return ("访达", display, finder_folder_uri(display))
     windows = windows_display_path(path)
-    if not windows:
-        return None
-    return ("资源管理器", windows, explorer_folder_uri(windows))
+    if windows:
+        return ("资源管理器", windows, explorer_folder_uri(windows))
+    distro = os.environ.get("WSL_DISTRO_NAME")
+    if distro and sys.platform != "win32":
+        resolved = path.resolve()
+        text = resolved.as_posix()
+        display = "\\\\wsl.localhost\\" + distro + text.replace("/", "\\")
+        return ("资源管理器", display, wsl_linux_folder_uri(text, distro))
+    return None
 
 
 def folder_open_line(path: Path, tty: bool | None = None) -> str | None:
