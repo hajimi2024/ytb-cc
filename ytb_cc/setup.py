@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -25,15 +26,46 @@ def repo_root() -> Path | None:
     return root
 
 
+def venv_python(root: Path) -> Path:
+    folder = "Scripts" if sys.platform == "win32" else "bin"
+    name = "python.exe" if sys.platform == "win32" else "python"
+    return root / ".venv" / folder / name
+
+
 def install_command(root: Path) -> int:
+    """装进仓库里的虚拟环境，避免 Debian / Ubuntu 禁止改系统 Python。"""
+    python = venv_python(root)
+    if not python.is_file():
+        print("正在创建虚拟环境 …")
+        created = subprocess.run([sys.executable, "-m", "venv", str(root / ".venv")], check=False)
+        if created.returncode != 0:
+            print("无法创建虚拟环境。Debian / Ubuntu 请先执行：", file=sys.stderr)
+            print("  apt install -y python3-venv", file=sys.stderr)
+            return created.returncode
     print("正在安装 ytb-cc …")
     completed = subprocess.run(
-        [sys.executable, "-m", "pip", "install", "-e", str(root)],
+        [str(python), "-m", "pip", "install", "-e", str(root)],
         check=False,
     )
     if completed.returncode != 0:
         print("安装失败。请确认当前 Python 是 3.10 或更高，并且 pip 可用。", file=sys.stderr)
-    return completed.returncode
+        return completed.returncode
+    if sys.platform != "win32":
+        publish_posix_command(python.parent / "ytb-cc")
+    return 0
+
+
+def publish_posix_command(binary: Path) -> None:
+    if hasattr(os, "geteuid") and os.geteuid() == 0:
+        dest_dir = Path("/usr/local/bin")
+    else:
+        dest_dir = Path.home() / ".local" / "bin"
+        dest_dir.mkdir(parents=True, exist_ok=True)
+    dest = dest_dir / "ytb-cc"
+    if dest.is_symlink() or dest.exists():
+        dest.unlink()
+    dest.symlink_to(binary)
+    print(f"命令已放到：{dest}")
 
 
 def confirm(prompt: str, input_fn) -> bool:

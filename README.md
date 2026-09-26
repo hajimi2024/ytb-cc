@@ -117,6 +117,8 @@ cd ytb-cc
 python -m ytb_cc.setup; if ($LASTEXITCODE -eq 0) { Set-Location ~ }
 ```
 
+Debian / Ubuntu 不允许把程序直接装进系统 Python。setup 会在仓库里建一个虚拟环境再安装，不用额外加参数。如果提示无法创建虚拟环境，先执行 `apt install -y python3-venv`，然后重新运行 setup。
+
 setup 装好命令后，只问一次字幕文件夹。
 
 - 直接按回车：使用默认文件夹，并自动创建。root 服务器是 `/root/YouTube字幕`，普通用户在自己的家目录下，Windows 是 `C:\Users\当前用户\YouTube字幕`。
