@@ -33,14 +33,14 @@ def venv_python(root: Path) -> Path:
 
 
 def install_command(root: Path) -> int:
-    """装进仓库里的虚拟环境，避免 Debian / Ubuntu 禁止改系统 Python。"""
+    """装进仓库里的虚拟环境。WSL 的 Ubuntu 不允许直接改系统 Python。"""
     python = venv_python(root)
     if not python.is_file():
         print("正在创建虚拟环境 …")
         created = subprocess.run([sys.executable, "-m", "venv", str(root / ".venv")], check=False)
         if created.returncode != 0:
-            print("无法创建虚拟环境。Debian / Ubuntu 请先执行：", file=sys.stderr)
-            print("  apt install -y python3-venv", file=sys.stderr)
+            print("无法创建虚拟环境。WSL 请先执行：", file=sys.stderr)
+            print("  sudo apt install -y python3-venv", file=sys.stderr)
             return created.returncode
     print("正在安装 ytb-cc …")
     completed = subprocess.run(

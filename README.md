@@ -41,7 +41,7 @@
 
 这一步只查版本，不安装，也不拉仓库。需要 **Python 3.10 或更高**。
 
-Linux、WSL、Mac：
+WSL、Mac：
 
 ```bash
 python3 --version
@@ -59,16 +59,16 @@ python --version
 
 没有安装时用安装命令。已经安装但版本过旧时用更新命令。做完再查一次版本。
 
-Debian / Ubuntu 安装：
+WSL 安装：
 
 ```bash
-apt update && apt install -y python3 python3-pip python3-venv
+sudo apt update && sudo apt install -y python3 python3-pip python3-venv
 ```
 
-Debian / Ubuntu 更新：
+WSL 更新：
 
 ```bash
-apt update && apt install -y python3 python3-pip python3-venv
+sudo apt update && sudo apt install -y python3 python3-pip python3-venv
 python3 --version
 ```
 
@@ -101,7 +101,7 @@ python3 --version
 
 ## 📥 拉取并设置文件夹
 
-版本合格后再执行。Linux、WSL、Mac：
+版本合格后再执行。WSL、Mac：
 
 ```bash
 git clone https://github.com/hajimi2024/ytb-cc.git
@@ -117,11 +117,11 @@ cd ytb-cc
 python -m ytb_cc.setup; if ($LASTEXITCODE -eq 0) { Set-Location ~ }
 ```
 
-Debian / Ubuntu 不允许把程序直接装进系统 Python。setup 会在仓库里建一个虚拟环境再安装，不用额外加参数。如果提示无法创建虚拟环境，先执行 `apt install -y python3-venv`，然后重新运行 setup。
+WSL 里的 Ubuntu 不允许把程序直接装进系统 Python。setup 会在仓库里建一个虚拟环境再安装，不用额外加参数。如果提示无法创建虚拟环境，先执行 `sudo apt install -y python3-venv`，然后重新运行 setup。
 
 setup 装好命令后，只问一次字幕文件夹。
 
-- 直接按回车：使用默认文件夹，并自动创建。root 服务器是 `/root/YouTube字幕`，普通用户在自己的家目录下，Windows 是 `C:\Users\当前用户\YouTube字幕`。
+- 直接按回车：使用默认文件夹，并自动创建。WSL 和 Mac 在家目录下的 `YouTube字幕`，Windows 是 `C:\Users\当前用户\YouTube字幕`。
 - 要自定义：输入绝对路径，例如 `/mnt/e/YouTube字幕` 或 `D:\YouTube字幕`。相对路径不会被接受。
 
 成功后终端回到登录时的目录，提示符从 `~/ytb-cc #` 回到 `~ #`。这是家目录，不是硬盘最顶层的 `/`。安装失败时不会跳走。
@@ -134,7 +134,7 @@ setup 装好命令后，只问一次字幕文件夹。
 unsetopt nomatch
 ```
 
-以后要换字幕文件夹，先进仓库再运行一次 setup，成功后同样回到家目录。
+以后要换字幕文件夹，先进仓库再运行一次 setup，成功后同样回到家目录。WSL、Mac 用 `python3 -m ytb_cc.setup && cd ~`，Windows 用 `python -m ytb_cc.setup`，成功后再 `Set-Location ~`。
 
 ## 💬 使用
 
@@ -184,7 +184,7 @@ ytb-cc -o 某文件.txt <链接>
 
 以后如果想卸掉这个命令，在家目录执行。这只删除程序、配置和克隆下来的仓库，不删除已经生成的字幕文件夹。
 
-Linux、WSL、Mac：
+WSL、Mac：
 
 ```bash
 python3 -m pip uninstall -y ytb-cc
