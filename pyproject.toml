@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ytb-cc"
+version = "1.0.0"
+description = "把 YouTube 已有字幕拉成一份 UTF-8 文本"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = ["youtube-transcript-api"]
+
+[project.scripts]
+ytb-cc = "ytb_cc:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ytb_cc*"]
