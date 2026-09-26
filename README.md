@@ -126,7 +126,7 @@ setup 装好命令后，只问一次字幕文件夹。
 
 成功后终端回到登录时的目录，提示符从 `~/ytb-cc #` 回到 `~ #`。这是家目录，不是硬盘最顶层的 `/`。安装失败时不会跳走。
 
-如果随后提示找不到 `ytb-cc`：WSL 和 Mac 把 `~/.local/bin` 加入 PATH；Windows 确认 Python 的 `Scripts` 目录在 PATH 里。然后新开一个终端。
+Windows 会把 `ytb-cc` 放到 `%USERPROFILE%\.local\bin`，并写入用户 PATH。请新开一个 PowerShell 窗口再用。WSL 和 Mac 如果提示找不到命令，把 `~/.local/bin` 加入 PATH，然后新开一个终端。
 
 用 zsh（WSL 或 Mac）时，在 `~/.zshrc` 加一行，否则链接里的 `?` 到不了程序：
 
@@ -195,7 +195,7 @@ Windows PowerShell：
 
 ```powershell
 python -m pip uninstall -y ytb-cc
-Remove-Item -Recurse -Force "$env:APPDATA\ytb-cc", "$env:USERPROFILE\ytb-cc"
+Remove-Item -Recurse -Force "$env:APPDATA\ytb-cc", "$env:USERPROFILE\ytb-cc", "$env:USERPROFILE\.local\bin\ytb-cc.cmd"
 ```
 
 字幕如果也要删，再自己删除当时设置的那个文件夹。

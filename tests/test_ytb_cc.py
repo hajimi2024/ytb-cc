@@ -18,7 +18,7 @@ from ytb_cc import (
     save_output_dir,
     select_track,
 )
-from ytb_cc.setup import run_setup
+from ytb_cc.setup import merge_path, run_setup
 
 
 def track(code: str, generated: bool, name: str | None = None):
@@ -159,6 +159,13 @@ class SetupTest(unittest.TestCase):
                 saved = configured_output_dir()
             self.assertEqual(code, 0)
             self.assertEqual(saved, dest.resolve())
+
+    def test_merge_path_adds_windows_bin_once(self):
+        directory = r"C:\Users\me\.local\bin"
+        self.assertEqual(merge_path("", directory), directory)
+        once = merge_path(r"C:\Windows", directory)
+        self.assertEqual(once, r"C:\Windows;" + directory)
+        self.assertEqual(merge_path(once, directory), once)
 
     def test_no_tty(self):
         self.assertEqual(run_setup(isatty=False, install=False), 1)

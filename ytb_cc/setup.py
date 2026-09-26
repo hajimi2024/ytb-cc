@@ -50,9 +50,51 @@ def install_command(root: Path) -> int:
     if completed.returncode != 0:
         print("安装失败。请确认当前 Python 是 3.10 或更高，并且 pip 可用。", file=sys.stderr)
         return completed.returncode
-    if sys.platform != "win32":
+    if sys.platform == "win32":
+        publish_windows_command(python.parent / "ytb-cc.exe")
+    else:
         publish_posix_command(python.parent / "ytb-cc")
     return 0
+
+
+def merge_path(existing: str, directory: str) -> str:
+    parts = [part for part in existing.split(";") if part]
+    target = os.path.normcase(os.path.normpath(directory))
+    if any(os.path.normcase(os.path.normpath(part)) == target for part in parts):
+        return existing
+    if existing and not existing.endswith(";"):
+        existing += ";"
+    return existing + directory
+
+
+def publish_windows_command(binary: Path) -> None:
+    dest_dir = Path.home() / ".local" / "bin"
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    dest = dest_dir / "ytb-cc.cmd"
+    dest.write_text(f'@echo off\r\n"{binary}" %*\r\n', encoding="utf-8")
+    ensure_user_path(dest_dir)
+    print(f"命令已放到：{dest}")
+    print("请新开一个 PowerShell 窗口，再运行 ytb-cc。")
+
+
+def ensure_user_path(directory: Path) -> None:
+    import winreg
+
+    with winreg.OpenKey(
+        winreg.HKEY_CURRENT_USER, "Environment", 0, winreg.KEY_READ | winreg.KEY_WRITE
+    ) as key:
+        try:
+            current, kind = winreg.QueryValueEx(key, "Path")
+        except FileNotFoundError:
+            current, kind = "", winreg.REG_EXPAND_SZ
+        updated = merge_path(str(current), str(directory))
+        if updated != current:
+            winreg.SetValueEx(key, "Path", 0, kind, updated)
+    import ctypes
+
+    ctypes.windll.user32.SendMessageTimeoutW(
+        0xFFFF, 0x001A, 0, "Environment", 2, 5000, None
+    )
 
 
 def publish_posix_command(binary: Path) -> None:
