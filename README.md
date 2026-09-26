@@ -4,7 +4,7 @@
 
 **把 YouTube 已有字幕收成一份文本**
 
-[安装](#-安装) · [使用](#-使用) · [字幕选择](#-字幕选择)
+[先检查 Python](#-先检查-python) · [安装](#-安装) · [使用](#-使用) · [字幕选择](#-字幕选择)
 
 </div>
 
@@ -37,11 +37,54 @@
 
 ---
 
+## 🐍 先检查 Python
+
+安装本项目之前，先看这台电脑有没有 Python，以及版本是不是 **3.10 或更高**。
+
+Linux、WSL、Mac：
+
+```bash
+python3 --version
+```
+
+Windows PowerShell：
+
+```powershell
+python --version
+```
+
+两种结果：
+
+- 显示出 `Python 3.10`、`3.11`、`3.12` 或更高：已经装好，直接往下做安装。
+- 提示 `command not found`、`不是内部或外部命令`，或者版本低于 3.10：按你的系统安装。
+
+Debian / Ubuntu 服务器（当前用户是 root）：
+
+```bash
+apt update && apt install -y python3 python3-pip python3-venv
+python3 --version
+```
+
+Windows PowerShell：
+
+```powershell
+winget install Python.Python.3.12
+```
+
+装完后关掉终端再开一个，再运行 `python --version`。
+
+Mac（已安装 Homebrew）：
+
+```bash
+brew install python@3.12
+python3 --version
+```
+
 不下载视频，不做语音识别，不登录账号。PowerShell、WSL、Mac 装完之后都用同一个命令。
 
 ## 📦 安装
 
-Linux 服务器、WSL、Mac 用下面这三行。服务器上没有 Python 时，`bootstrap.sh` 会先安装 Python 3.10 或更高（Debian / Ubuntu，并且当前是 root），然后再问字幕文件夹。
+确认 Python 版本符合上面的要求后，再拉仓库。Linux 服务器、WSL、Mac：
 
 ```bash
 git clone https://github.com/hajimi2024/ytb-cc.git
